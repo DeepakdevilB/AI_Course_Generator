@@ -6,12 +6,6 @@ export async function POST(req) {
   try {
     const { notes, language } = await req.json();
 
-    const config = {
-        responseMimeType: 'text/plain',
-    };
-    
-    const model = 'gemini-2.5-flash'; 
-
     const prompt = `
       Translate the following educational course notes into ${language}.
       Strictly maintain all original HTML formatting, structural elements, and CSS classes (like Tailwind classes).
@@ -21,25 +15,22 @@ export async function POST(req) {
       ${notes}
     `;
 
-    const contents = [
-        {
-            role: 'user',
-            parts: [{ text: prompt }],
-        },
-    ];
-
-    const response = await ai.models.generateContent({
-        model,
-        config,
-        contents,
+    const response = await ai.chat.completions.create({
+        model: process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o-mini',
+        messages: [
+            {
+                role: 'user',
+                content: prompt
+            }
+        ]
     });
 
-    const translatedText = response.candidates[0].content.parts[0].text;
+    const translatedText = response.choices[0].message.content;
 
     return NextResponse.json({ translatedText: translatedText });
     
   } catch (error) {
-    console.error("Gemini API Error:", error);
+    console.error("Azure OpenAI API Error:", error);
     return NextResponse.json(
       { error: "Failed to generate translation." }, 
       { status: 500 }

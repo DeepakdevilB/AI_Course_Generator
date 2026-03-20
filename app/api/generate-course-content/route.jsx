@@ -30,37 +30,26 @@ export async function POST(req) {
 
     // 🔥 FIX 1: We use a for...of loop to process one chapter at a time
     for (const chapter of chapters) {
-        const config = {
-            responseMimeType: 'application/json', 
-        };
-        const model = 'gemini-2.5-flash';
-        const contents = [
-            {
-                role: 'user',
-                parts: [
-                    {
-                        text: PROMPT + JSON.stringify(chapter),
-                    },
-                ],
-            },
-        ];
-
-        const response = await ai.models.generateContent({
-            model,
-            config,
-            contents,
+        
+        const response = await ai.chat.completions.create({
+            model: process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o-mini',
+            messages: [
+                {
+                    role: 'user',
+                    content: PROMPT + JSON.stringify(chapter)
+                }
+            ],
+            response_format: { type: 'json_object' }
         });
         
-        const RawResp = response.candidates[0].content.parts[0].text;
-        
-        const RawJson = RawResp.replace(/```json/g, '').replace(/```/g, '').trim();
+        const RawResp = response.choices[0].message.content;
         
         let JSONResp;
         
         try {
-             JSONResp = JSON.parse(RawJson);
+             JSONResp = JSON.parse(RawResp);
         } catch (error) {
-             console.error("Failed to parse AI JSON:", RawJson);
+             console.error("Failed to parse AI JSON:", RawResp);
              console.error("Parse Error:", error);
              JSONResp = { chapterName: chapter.chapterName, topics: [] }; 
         }
@@ -78,7 +67,7 @@ export async function POST(req) {
             courseData: JSONResp
         });
 
-        // 🔥 FIX 1: Add a 3-second delay between Gemini requests to respect the Free Tier limits
+        // 🔥 FIX 1: Add a delay to respect API limits (for Azure, can reduce it, but leaving 3s is safe)
         await new Promise(resolve => setTimeout(resolve, 3000));
     }
 

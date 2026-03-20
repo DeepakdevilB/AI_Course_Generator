@@ -31,29 +31,21 @@ export async function POST(req) {
     const { notes } = await req.json();
 
     try {
-        const config = {
-            responseMimeType: 'text/plain',
-        };
-        const model = 'gemini-2.5-flash'; 
-        const contents = [
-            {
-                role: 'user',
-                parts: [
-                    {
-                        text: PROMPT + notes,
-                    },
-                ],
-            },
-        ];
-
-        const response = await ai.models.generateContent({
-            model,
-            config,
-            contents,
+        const response = await ai.chat.completions.create({
+            model: process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o-mini',
+            messages: [
+                {
+                    role: 'user',
+                    content: PROMPT + notes
+                }
+            ]
         });
 
-        const rawResp = response.candidates[0].content.parts[0].text;
-        const quizJson = JSON.parse(rawResp);
+        const rawResp = response.choices[0].message.content;
+        
+        // Clean up markdown in case the model returns it
+        const cleanedJson = rawResp.replace(/```json/g, '').replace(/```/g, '').trim();
+        const quizJson = JSON.parse(cleanedJson);
         
         return NextResponse.json(quizJson);
 
