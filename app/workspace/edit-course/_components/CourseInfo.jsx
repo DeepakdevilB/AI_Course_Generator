@@ -13,6 +13,20 @@ function CourseInfo({ course, viewCourse }) {
     const courseLayout = course?.courseJson?.course;
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+
+    // Calculate Dynamic Duration
+    let totalDuration = 0;
+    courseLayout?.chapters?.forEach(cap => {
+        const str = cap?.duration?.toLowerCase() || '';
+        const num = parseFloat(str);
+        if (!isNaN(num)) {
+            if (str.includes('min')) totalDuration += num / 60;
+            else totalDuration += num;
+        }
+    });
+    const finalDuration = totalDuration > 0 ? `${Math.round(totalDuration * 10) / 10} Hours` : '2 Hours';
+    const totalChapters = courseLayout?.chapters?.length || courseLayout?.noOfChapters || 0;
+
     const GenerateCourseContent = async () => {
 
         setLoading(true)
@@ -48,19 +62,19 @@ function CourseInfo({ course, viewCourse }) {
 
                         </div>}
 
-                    {course ? <div className='grid grid-cols-1 lg:grid-cols-3 gap-5'>
+                    {course ? <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 mt-4'>
                         <div className='flex gap-5 items-center p-3 rounded-lg shadow'>
                             <Clock className='text-blue-500' />
                             <section>
-                                <h2 className='font-bold'>Duration</h2>
-                                <h2>2 Hours</h2>
+                                <h2 className='font-bold text-sm text-gray-500'>Duration</h2>
+                                <h2 className="font-semibold">{finalDuration}</h2>
                             </section>
                         </div>
                         <div className='flex gap-5 items-center p-3 rounded-lg shadow'>
                             <Book className='text-green-500' />
                             <section>
-                                <h2 className='font-bold'>Chapters</h2>
-                                <h2>2 Hours</h2>
+                                <h2 className='font-bold text-sm text-gray-500'>Chapters</h2>
+                                <h2 className="font-semibold">{totalChapters} Modules</h2>
                             </section>
                         </div>
                         <div className='flex gap-5 items-center p-3 rounded-lg shadow'>

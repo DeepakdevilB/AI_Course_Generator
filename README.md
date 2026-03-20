@@ -1,146 +1,96 @@
-# 🎓 AI Course Generator
+# 🎓 AI Course Generator (Premium Edition)
 
-An AI-powered personalized course generator that creates structured learning paths based on user input. This platform integrates **YouTube API** to supplement courses with curated video content, offering a rich and engaging educational experience.
+A beautifully designed, AI-powered personalized course generator that creates structured learning paths based on user input. This platform utilizes the latest **Azure OpenAI (GPT-4o)** models to generate comprehensive curriculums and integrates the **YouTube Data API** to dynamically supplement courses with curated video content.
 
-## 📸 Screenshots
+Recently overhauled with a stunning **Glassmorphic UI**, an intelligent **Gamified Reward System**, and robust **AI Image Generation placeholders**, this project guarantees a rich, engaging, and premium educational experience.
 
-### 1️⃣ Hero Page – Get Started
-Clean and modern landing page with a prominent **Get Started** button.  
-![Hero Page](./pp1.png)
+## 🚀 Key Features & Upgrades
 
----
-
-### 2️⃣ Authentication with Clerk
-Sign up or sign in securely using **Clerk** authentication.  
-![Authentication](./pp2.png)
-
----
-
-### 3️⃣ Creating a Course
-Users can enter topic, category, and level to generate a custom course.  
-![Create Course](./pp3.png)
-
----
-
-### 4️⃣ All Courses Section
-Displays all the courses generated so far by all users.  
-![All Courses](./pp4.png)
-
----
-
-### 5️⃣ Gemini Generated Course Layout
-Course outline generated using **Gemini AI** based on user input.  
-![Course Layout](./pp5.png)
-
----
-
-### 6️⃣ YouTube Videos for Each Chapter
-Auto-fetched YouTube videos related to each chapter topic.  
-![YouTube Videos](./pp6.png)
-
----
-
-### 7️⃣ Actual Content in Each Chapter
-Detailed AI-generated explanation and content for each chapter.  
-![Chapter Content](./pp7.png)
-
----
-
-### 8️⃣ Payment Page for Subscription
-SaaS-style subscription or one-time payment to unlock premium benefits.  
-![Payment Page](./pp8.png)
-
-## 🚀 Features
-
-- ✨ **AI-Powered Course Generation** using **Gemini API**
-- 📺 **YouTube Video Integration** via YouTube Data API
-- 🧑‍💻 Built with **Next.js** & **React**
-- 💅 Modern UI with **Tailwind CSS** and **ShadCN UI**
-- 🔐 **Authentication** using **Clerk**
-- 💳 **Payment Support** via Clerk billing (or Stripe integration ready)
-- 📚 Dynamic multi-chapter course structure
-- 🧠 Smart difficulty level & category tagging
+- ✨ **Azure OpenAI Powered Generation**: Fully migrated to the cutting-edge **Azure OpenAI** service, natively generating multi-chapter course layouts, deep modular content, localized translations, and rigorous quizzes!
+- 🏆 **Gamified Reward System**: Built-in progression tracking! Users earn **+100 Points** directly to their profile upon completing a course.
+- 🛡️ **Watch-Time Enforcement**: Built-in logic using the custom YouTube Player API prevents points hoarding by requiring users to watch at least **50% of a video** before they can mark a chapter as completed.
+- 📺 **Curated YouTube Integrations**: Automatically fetches and embeds the most relevant educational YouTube videos per chapter, uniquely configured to disable distracting cross-channel suggestions limit (`rel=0`).
+- 💅 **Premium Aesthetic UI**: Rebuilt with modern, responsive **Glassmorphism**, floating layout grids, smooth Tailwind animations, and ambient background gradients.
+- 🖼️ **Dynamic AI Cover Images**: Uses the **AI Guru Lab API** to generate targeted course thumbnails. Features a bulletproof fallback engine using **Pollinations.ai** and gorgeous native DOM gradients if external image limits are reached.
+- 🔐 **Authentication**: Seamless, secure auth state management handled natively by **Clerk**.
 
 ---
 
 ## 🧠 How It Works
 
-1. **User Input**: Learners enter their topic, level, and preferences.
-2. **Gemini AI**: Generates a tailored course outline.
-3. **YouTube API**: Fetches the most relevant videos for each chapter.
-4. **Dynamic UI**: Course layout displayed with clean, interactive UI components.
-5. **Authentication**: Users can sign in, save, and revisit generated courses.
-6. **Optional Payment**: Monetize course generation or premium features.
+1. **User Input / Search**: Learners enter their desired topic, level of experience, and learning preferences.
+2. **Azure OpenAI Processing**: GPT-4o dynamically orchestrates a highly-tailored course syllabus.
+3. **Thumbnail Generation**: AI actively generates a customized 16:9 3D-illustration thumbnail representing the curriculum.
+4. **YouTube Aggregation**: The system algorithms fetch the most highly-rated, highly-relevant educational videos per module.
+5. **Interactive Dashboard**: Learners navigate a clean, beautifully styled dashboard tracking their progress, managing course completion, and pooling their total Reward Points.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Complete Tech Stack
 
 | Tech            | Description                                 |
 |-----------------|---------------------------------------------|
-| **Next.js**     | Full-stack React framework                  |
-| **React**       | UI Library                                  |
-| **Tailwind CSS**| Utility-first CSS for styling               |
-| **ShadCN UI**   | Prebuilt accessible components              |
-| **Gemini API**  | Used to generate course outlines            |
-| **YouTube API** | To embed relevant video resources           |
-| **Clerk**       | Authentication & optional billing integration |
-| **JavaScript**  | Programming Language                        |
-
----
-
-## 🔐 Authentication
-
-- Sign-up & Sign-in via **Clerk**
-- JWT-protected API routes
-- User-specific course history
-
----
-
-## 💳 Payments
-
-> Payments are handled through Clerk or can be extended using **Stripe** for managing subscriptions or pay-per-course models.
+| **Next.js 15**  | React framework for fast Server-Side rendering & custom API routes |
+| **React 18**    | Declarative UI Component Library            |
+| **Tailwind v4** | Utility-first CSS powering the aesthetic and animations |
+| **Neon DB**     | Hyper-scalable Serverless PostgreSQL Database |
+| **Drizzle ORM** | Lightning-fast, type-safe database queries & migrations |
+| **Azure OpenAI**| The core "Brain" powering the course content generation |
+| **YouTube API** | Fetching and embedding premium video content |
+| **Clerk**       | Fully-managed User Authentication and metadata handling |
 
 ---
 
 ## 🧪 Setup Instructions
 
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/ai-course-generator.git
-cd ai-course-generator
+git clone https://github.com/DeepakdevilB/AI_Course_Generator.git
+cd AI-course-generator
 ```
-## Install dependencies
-```
+
+### 2. Install Dependencies
+```bash
 npm install
 ```
-## Environment variables
-cp .env.example .env.local
-## Fill in required API keys for:
-```
-# Clerk Configuration
+
+### 3. Configure Environmental Variables
+Create a local `.env` file in the root of your project and configure the required keys:
+
+```env
+# Clerk Authentication Configuration
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
-NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
 
-# Database Configuration
+# Neon Database Configuration (PostgreSQL)
 DATABASE_URL=
 NEXT_PUBLIC_DATABASE_URL=
 
-# Gemini API Key
-GEMINI_API_KEY=
+# Azure OpenAI Configuration (Core AI Engine)
+AZURE_OPENAI_API_KEY=
+AZURE_OPENAI_ENDPOINT=
+AZURE_OPENAI_API_VERSION=2023-05-15
+AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini # Change if your target deployment differs
 
-# AI Guru Lab API
+# External Generative APIs
 AI_GURU_LAB_API=
-
-# YouTube API Key
 YOUTUBE_API_KEY=
 
 ```
-## Run locally
+
+### 4. Push Database Schema (Drizzle ORM)
+Ensure your Neon PostgreSQL connection string is correct, then sync the DB.
+```bash
+npx drizzle-kit push
 ```
+
+### 5. Run the Local Development Server
+```bash
 npm run dev
 ```
+
+Your premium AI Course application will now be running on [http://localhost:3000](http://localhost:3000)!

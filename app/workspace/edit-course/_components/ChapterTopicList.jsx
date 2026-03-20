@@ -14,7 +14,7 @@ function ChapterTopicList({ course }) {
                             <h2 className='text-center '>Chapter {index + 1}</h2>
                             <h2 className='font-bold text-lg text-center'>{chapter.chapterName}</h2>
                             <h2 className='text-xs flex justify-between gap-16'><span>Duration: {chapter?.duration}</span>
-                                <span>No. Of Chapters: {chapter?.topics?.length}</span>
+                                <span>No. Of Topics: {chapter?.topics?.length}</span>
                             </h2>
                         </div>
                         <div>

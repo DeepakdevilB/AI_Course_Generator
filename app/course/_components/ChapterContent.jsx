@@ -7,7 +7,7 @@ import { SelectedChapterIndexContext } from '@/context/SelectedChapterIndexConte
 import axios from 'axios';
 import { CheckCircle, Loader2Icon, X, Volume2, VolumeX } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import YouTube from 'react-youtube';
 import { toast } from 'sonner';
 import Quiz from './Quiz';
@@ -25,11 +25,56 @@ function ChapterContent({ courseInfo, refreshData }) {
     const [loading, setLoading] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
 
+    // Watch requirement state & refs
+    const [isVideoThresholdMet, setVideoThresholdMet] = useState(true);
+    const timerRef = useRef(null);
+
     useEffect(() => {
         return () => {
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         };
     }, [selectedChapterIndex]);
+
+    useEffect(() => {
+        // Clear interval on chapter switch
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+        }
+
+        // If there are videos in this chapter, require 30% completion to unlock
+        if (videoData && videoData.length > 0) {
+            setVideoThresholdMet(false);
+        } else {
+            // No videos in this chapter -> auto unlock
+            setVideoThresholdMet(true); 
+        }
+    }, [selectedChapterIndex, videoData]);
+
+    const checkVideoProgress = (player) => {
+        if (timerRef.current) clearInterval(timerRef.current);
+        if (isVideoThresholdMet) return;
+
+        timerRef.current = setInterval(() => {
+            const current = player.getCurrentTime();
+            const duration = player.getDuration();
+            
+            // Reached 50% -> Unlock button
+            if (duration > 0 && (current / duration) >= 0.5) {
+                setVideoThresholdMet(true);
+                toast.success("Watch requirement met! You can now mark this complete.", { id: 'unlock-toast' });
+                clearInterval(timerRef.current);
+            }
+        }, 1000);
+    };
+
+    const onPlayerStateChange = (e) => {
+        // PlayerState.PLAYING is 1
+        if (e.data === 1) {
+            checkVideoProgress(e.target);
+        } else {
+            if (timerRef.current) clearInterval(timerRef.current);
+        }
+    };
 
     const markChapterCompleted = async () => {
         setLoading(true);
@@ -39,7 +84,7 @@ function ChapterContent({ courseInfo, refreshData }) {
             completedChapter: completedChapter
         });
         refreshData();
-        toast.success('Chapter Marked Completed!');
+        toast.success('Chapter Marked Completed! +Points');
         setLoading(false);
     }
 
@@ -66,7 +111,6 @@ function ChapterContent({ courseInfo, refreshData }) {
     const chapterNotesText = topics?.map(topic => getPlainText(topic.content)).join('\n\n');
 
     // Compile topics into a single HTML string for the translator component
-    // Note: We use 'class' here instead of 'className' because it becomes raw HTML
     const originalNotesHtml = topics?.map((topic, index) => `
         <div class="mt-10 p-5 bg-secondary rounded-2xl">
             <h2 class="font-bold text-2xl text-primary mb-4">${index + 1}. ${topic?.topic}</h2>
@@ -110,9 +154,13 @@ function ChapterContent({ courseInfo, refreshData }) {
                     </Button>
 
                     {!completedChapter?.includes(selectedChapterIndex) ?
-                        <Button onClick={() => markChapterCompleted()} disabled={loading}> 
+                        <Button 
+                            onClick={() => markChapterCompleted()} 
+                            disabled={loading || !isVideoThresholdMet}
+                            className={!isVideoThresholdMet ? 'opacity-80' : ''}
+                        > 
                             {loading ? <Loader2Icon className='animate-spin' /> : <CheckCircle />}
-                            Mark as Completed 
+                            {!isVideoThresholdMet ? "Watch 50% to Complete" : "Mark as Completed"}
                         </Button> :
                         <Button variant="outline" onClick={markInCompleteChapter} disabled={loading}>
                             {loading ? <Loader2Icon className='animate-spin' /> : <X />} 
@@ -128,7 +176,14 @@ function ChapterContent({ courseInfo, refreshData }) {
                     <div key={index}>
                         <YouTube
                             videoId={video?.videoId}
-                            opts={{ height: '450px', width: '100%' }}
+                            opts={{ 
+                                height: '450px', 
+                                width: '100%',
+                                playerVars: {
+                                    rel: 0,
+                                }
+                            }}
+                            onStateChange={(e) => onPlayerStateChange(e)}
                         />
                     </div>
                 ))}

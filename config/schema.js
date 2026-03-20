@@ -4,7 +4,8 @@ export const usersTable = pgTable("users", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: varchar({ length: 255 }).notNull(),
     email: varchar({ length: 255 }).notNull().unique(),
-    subscriptionId: varchar()
+    subscriptionId: varchar(),
+    points: integer().default(0) // New points feature field
 });
 
 
